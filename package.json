@@ -1,0 +1,12 @@
+{
+  "name": "GMusic-MPD",
+  "version": "0.0.0",
+  "description": "Adds Extended M3U data temporarily to the current playlist",
+  "main": "main.js",
+  "author": "Ilias Ismanalijev",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^2.6.0",
+    "komponist": "https://github.com/Illyism/komponist/archive/v0.1.1.tar.gz"
+  }
+}
