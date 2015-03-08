@@ -48,7 +48,11 @@ Options:
   -c, --check                  List songs in the playlist
   -l, --list                   Display playlists in directory
   -r, --reload                 Clear and load the playlist
-  --play [position]            Play the song in the playlist
+    --play [position]            Play the song in the playlist
+  -f, --fetch <artist>         Download the playlist for an artist from GMusicProxy
+    --gmusic <host:port>         The host and port of GMusicProxy
+    --tracks <tracks>            Amount of songs to fetch
+
 
 
 ```
@@ -82,6 +86,8 @@ Default: `6600`. The MPD port.
 
 Lists all the playlists in the directory.
 
+---
+
 > -r --reload
 
 Clear the current playlist completely and load the specified playlist. It doesn't play yet.
@@ -89,6 +95,20 @@ Clear the current playlist completely and load the specified playlist. It doesn'
 > --play [position]
 
 Plays the first song or the song specified as the argument.
+
+---
+
+> -f --fetch
+
+Fetches the artist playlist from GMusicProxy and saves it to the playlist in the playlists directory.
+
+> --tracks <amount>
+
+Default: `100`. The amount of tracks for GMusicProxy to fetch.
+
+> --gmusic <host:port>
+
+Default: `localhost:9999`. The address of the GMusicProxy service.
 
 ## Examples
 
@@ -109,6 +129,20 @@ Connects to the MPD server running on `192.168.1.100` and reloads and plays the 
 ```
 
 gmusic-mpd -h 192.168.1.100 -d /var/lib/mpd/playlists -r --play ratatat
+
+```
+
+
+### Fetch a playlist
+
+You can download the playlist by searching for the artist and saving it in the playlists directory. If you specify the reload option it will also load the newly created playlist.
+
+```bash
+# Get a playlist for the artist Queen and save it
+gmusic-mpd -d /var/lib/mpd/playlists queen -f Queen
+
+# Get a 200 songs playlist and load the 5th track
+gmusic-mpd -d /var/lib/mpd/playlists queen -f Queen -r --play 5 --tracks 200
 
 ```
 

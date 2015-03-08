@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 var komponist = require('komponist'),
+    http = require("http"),
     program = require("commander"),
     fs = require("fs"),
     path = require("path"),
@@ -23,8 +24,13 @@ program
   .option('-p, --port [port]', 'MPD Server Port', "6600")
   .option('-c, --check', 'List songs in the playlist')
   .option('-l, --list', 'Display playlists in directory')
+  
   .option("-r, --reload", "Clear and load the playlist")
-  .option("--play [position]", "Play the song in the playlist", "0")
+    .option("--play [position]", "Play the song in the playlist", "0")
+  
+  .option('-f, --fetch <artist>', 'Download the playlist for an artist from GMusicProxy')
+    .option("--gmusic <host:port>", "The host and port of GMusicProxy", "localhost:9999")
+    .option('--tracks <tracks>', 'Amount of songs to fetch', 100)
 
 program.parse(process.argv);
 
@@ -51,59 +57,73 @@ var playlist_name = program.args.join(" ");
 playlist = path.resolve(program.directory, playlist_name+program.ext);
 console.log("Reading playlist: %s%s%s", YLW, playlist, RES);
 
-fs.readFile(playlist, function(err, file) {
-  if (err) {
-    console.error("%s%s%s", RED,err,RES);
-    console.log("\nAvailable playlists: ");
-    return showPlaylists();
-  }
-
-  var songs = file.toString()
-    .split("#EXTINF")
-    .slice(1)
-    .map(function(song) {
-      var trim = song.trim().split("\n");
-      trim[0] = trim[0].slice(1);
-      song = trim[0]
-        .split(",", 2)[1] // Strip the time part as you can't set this
-        .split(" - "); // GMusixProxy returns Title - Artist - Album
-      return {
-        file: trim[1],
-        extm3u: trim[0],
-        song: song,
-        artist: song[0],
-        title: song[1],
-        album: song[2]
-      };
-    });
-
-  console.log("Connecting to %s%s:%s%s", YLW, program.host, program.port, RES);
-  var client = komponist.createConnection(program.port, program.host, function() {
-   
-      if (program.reload) {
-        return client.clear(function() {
-          client.load(playlist_name, function(err) {
-            if (err) {
-              console.error("%s%s %s %s", RED, err, playlist_name, RES);
-              console.log("\nAvailable playlists: ");
-              return client.listplaylists(function(err, playlists) {
-                if (err) return console.error("%s%s%s", RED, err, RES);
-                playlists.forEach(function(file) {
-                  console.log(" - %s", file.playlist);
-                });
-                process.exit(1);
-              });
-            }
-
-            addTags(client, songs);
-            if (program.play) client.play(program.play);
-          })
-        });
-      }
-
-      addTags(client, songs);
+if (program.fetch) {
+  var url = "http://"+program.gmusic+"/get_by_search?num_tracks="+program.tracks+"&type=artist&artist="+program.fetch;
+  var file = fs.createWriteStream(playlist);
+  console.log("Fetching: %s%s%s", YLW, url, RES);
+  var request = http.get(url, function(response) {
+    response.pipe(file);
+    file.on("finish", init)
   });
-});
+} else {
+  init();
+}
+
+function init() {
+  fs.readFile(playlist, function(err, file) {
+    if (err) {
+      console.error("%s%s%s", RED,err,RES);
+      console.log("\nAvailable playlists: ");
+      return showPlaylists();
+    }
+
+    var songs = file.toString()
+      .split("#EXTINF")
+      .slice(1)
+      .map(function(song) {
+        var trim = song.trim().split("\n");
+        trim[0] = trim[0].slice(1);
+        song = trim[0]
+          .split(",", 2)[1] // Strip the time part as you can't set this
+          .split(" - "); // GMusixProxy returns Title - Artist - Album
+        return {
+          file: trim[1],
+          extm3u: trim[0],
+          song: song,
+          artist: song[0],
+          title: song[1],
+          album: song[2]
+        };
+      });
+
+    console.log("Connecting to %s%s:%s%s", YLW, program.host, program.port, RES);
+    var client = komponist.createConnection(program.port, program.host, function() {
+
+        if (program.reload) {
+          return client.clear(function() {
+            client.load(playlist_name, function(err) {
+              if (err) {
+                console.error("%s%s %s %s", RED, err, playlist_name, RES);
+                console.log("\nAvailable playlists: ");
+                return client.listplaylists(function(err, playlists) {
+                  if (err) return console.error("%s%s%s", RED, err, RES);
+                  playlists.forEach(function(file) {
+                    console.log(" - %s", file.playlist);
+                  });
+                  process.exit(1);
+                });
+              }
+
+              addTags(client, songs);
+              if (program.play) client.play(program.play);
+            })
+          });
+        }
+
+        addTags(client, songs);
+    });
+  });
+}
 
 function showPlaylists() {
   try {
