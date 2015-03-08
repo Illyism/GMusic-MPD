@@ -1,5 +1,5 @@
 {
-  "name": "GMusic-MPD",
+  "name": "gmusic-mpd",
   "version": "0.1.0",
   "description": "Helper script for GMusicProxy together with MPD",
   "keywords": [
