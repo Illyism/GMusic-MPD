@@ -7,6 +7,7 @@ You can use Google Play Music - All Access with the correct extended m3u data us
 
 This is not limited to GMusicProxy however. It depends on how the m3u data is written.
 
+
 ## [GMusicProxy](http://gmusicproxy.net/)
 
 I'm assuming that you are using this application and have the `--extended-m3u` option set. You can also specify it in your `gmusixproxy.cfg` like this:
@@ -19,6 +20,18 @@ daemon=true
 ```
 
 But this tool only interfaces with the saved playlists on the system for the moment. So it doesn't connect with GMusicProxy.
+
+## Usage
+
+Use this tool to load a playlist and grab the m3u data.
+And send it to MPD.
+
+You need [Iojs](https://iojs.org/en/index.html) or [Node](https://nodejs.org/). Then install globally with NPM.
+
+```
+npm install -g gmusic-mpd
+```
+
 
 ```
 
@@ -40,10 +53,6 @@ Options:
 
 ```
 
-## Usage
-
-Use this tool to load a playlist and grab the m3u data.
-And send it to MPD.
 
 ## Options
 
