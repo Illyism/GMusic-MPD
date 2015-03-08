@@ -30,32 +30,33 @@ program.parse(process.argv);
 
 if (!program.directory) {
   console.error("  %sERROR:%s Specify a playlists directory", RED, RES);
+  console.log(" Example: gmusic-mpd -d ~/.mpd/playlists <playlist>");
   return program.help();
 }
 
 if (program.list) {
-  return fs.readdirSync(program.directory).filter(function(file) {
-      return path.extname(file) == program.ext;
-    }).map(function(file) {
-      return path.basename(file, program.ext);
-    }).forEach(function(file) {
-      console.log(" - %s", file);
-    })
+  return showPlaylists();
 }
 
 
 if (!program.args.length) {
-  console.error('  %sERROR:%s Specify a playlist', RED, RES);
+  console.error('%sERROR:%s Specify a playlist', RED, RES);
+  console.log("\nAvailable playlists: ");
+  showPlaylists();
   return program.help();
 }
 var playlist_name = program.args.join(" ");
 
 
 playlist = path.resolve(program.directory, playlist_name+program.ext);
-console.log("Reading playlist: \033[1;33m%s", YLW, playlist, RES);
+console.log("Reading playlist: %s%s%s", YLW, playlist, RES);
 
 fs.readFile(playlist, function(err, file) {
-  if (err) return console.error(err);
+  if (err) {
+    console.error("%s%s%s", RED,err,RES);
+    console.log("\nAvailable playlists: ");
+    return showPlaylists();
+  }
 
   var songs = file.toString()
     .split("#EXTINF")
@@ -104,6 +105,19 @@ fs.readFile(playlist, function(err, file) {
   });
 });
 
+function showPlaylists() {
+  try {
+    fs.readdirSync(program.directory).filter(function(file) {
+      return path.extname(file) == program.ext;
+    }).map(function(file) {
+      return path.basename(file, program.ext);
+    }).forEach(function(file) {
+      console.log(" - %s", file);
+    })
+  } catch(err) {
+    console.error("%s%s%s", RED, err, RES);
+  }
+}
 
 
 function addTags(client, songs) {
