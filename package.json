@@ -1,12 +1,32 @@
 {
   "name": "GMusic-MPD",
-  "version": "0.0.0",
-  "description": "Adds Extended M3U data temporarily to the current playlist",
-  "main": "main.js",
+  "version": "0.1.0",
+  "description": "Helper script for GMusicProxy together with MPD",
+  "keywords": [
+    "gmusic",
+    "google play music",
+    "mpd",
+    "ncmpcpp",
+    "cli"
+  ],
+  "bin": "./gmusic-mpd.js",
   "author": "Ilias Ismanalijev",
   "license": "MIT",
   "dependencies": {
     "commander": "^2.6.0",
     "komponist": "https://github.com/Illyism/komponist/archive/v0.1.1.tar.gz"
+  },
+  "author": {
+    "name": "Ilias Ismanalijev",
+    "email": "hello@illyism.com",
+    "url": "http://il.ly"
+  },
+  "preferGlobal": true,
+  "bugs": {
+    "url": "https://github.com/illyism/gmusic-mpd/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/illyism/gmusic-mpd.git"
   }
 }
