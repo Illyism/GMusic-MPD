@@ -53,6 +53,9 @@ Options:
     --gmusic <host:port>         The host and port of GMusicProxy
     --tracks <tracks>            Amount of songs to fetch
 
+  --ifl                        Grabs the I'm feeling Lucky Playlist
+
+
 
 
 ```
@@ -110,6 +113,12 @@ Default: `100`. The amount of tracks for GMusicProxy to fetch.
 
 Default: `localhost:9999`. The address of the GMusicProxy service.
 
+---
+
+> --ifl
+
+Grabs the I'm Feeling Lucky playlist.
+
 ## Examples
 
 ### Set the tags
@@ -143,6 +152,17 @@ gmusic-mpd -d /var/lib/mpd/playlists queen -f Queen
 
 # Get a 200 songs playlist and load the 5th track
 gmusic-mpd -d /var/lib/mpd/playlists queen -f Queen -r --play 5 --tracks 200
+
+```
+
+
+### I'm Feeling Lucky
+
+You can grab automatic "I'm feeling lucky" playlist.
+
+```bash
+# Get IFL playlist and save it in lucky.m3u and play it
+gmusic-mpd -d /var/lib/mpd/playlists --ifl -r --play
 
 ```
 

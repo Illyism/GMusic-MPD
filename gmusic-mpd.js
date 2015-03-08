@@ -32,6 +32,8 @@ program
     .option("--gmusic <host:port>", "The host and port of GMusicProxy", "localhost:9999")
     .option('--tracks <tracks>', 'Amount of songs to fetch', 100)
 
+  .option("--ifl", "Grabs the I'm feeling Lucky Playlist")
+
 program.parse(process.argv);
 
 if (!program.directory) {
@@ -45,7 +47,7 @@ if (program.list) {
 }
 
 
-if (!program.args.length) {
+if (!program.args.length && !program.ifl) {
   console.error('%sERROR:%s Specify a playlist', RED, RES);
   console.log("\nAvailable playlists: ");
   showPlaylists();
@@ -54,10 +56,19 @@ if (!program.args.length) {
 var playlist_name = program.args.join(" ");
 
 
+if (!playlist_name && program.ifl) playlist_name = "lucky";
 playlist = path.resolve(program.directory, playlist_name+program.ext);
 console.log("Reading playlist: %s%s%s", YLW, playlist, RES);
 
-if (program.fetch) {
+if (program.ifl) {
+  var url = "http://"+program.gmusic+"/get_ifl_station?num_tracks="+program.tracks;
+  var file = fs.createWriteStream(playlist);
+  console.log("Fetching: %s%s%s", YLW, url, RES);
+  var request = http.get(url, function(response) {
+    response.pipe(file);
+    file.on("finish", init)
+  });
+} else if (program.fetch) {
   var url = "http://"+program.gmusic+"/get_by_search?num_tracks="+program.tracks+"&type=artist&artist="+program.fetch;
   var file = fs.createWriteStream(playlist);
   console.log("Fetching: %s%s%s", YLW, url, RES);
