@@ -7,6 +7,15 @@ You can use Google Play Music - All Access with the correct extended m3u data us
 
 This is not limited to GMusicProxy however. It depends on how the m3u data is written.
 
+- [Usage](#)
+- [Options](#)
+- [Commands](#)
+- [Examples](#)
+	- [Set the tags](#)
+	- [Reload and Play](#)
+	- [Fetch a playlist](#)
+	- [I'm Feeling Lucky](#)
+
 
 ## [GMusicProxy](http://gmusicproxy.net/)
 
