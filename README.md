@@ -13,7 +13,7 @@ This is not limited to GMusicProxy however. It depends on how the m3u data is wr
 I'm assuming that you are using this application and have the `--extended-m3u` option set. You can also specify it in your `gmusixproxy.cfg` like this:
 
 ```
-email=hello@illyism.com
+email=me@il.ly
 password=password
 extended-m3u=true
 daemon=true
